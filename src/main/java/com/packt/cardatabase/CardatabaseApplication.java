@@ -14,39 +14,47 @@ import java.util.Arrays;
 public class CardatabaseApplication implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(CardatabaseApplication.class);
 
-    // 생성자를 통한 의존성 주입, CarRepository
-    private final CarRepository repository;	// 필드로 객체 선언
-    private final OwnerRepository onwerRepository;
-
-    public CardatabaseApplication(CarRepository repository, OwnerRepository onwerRepository) {	// 여기서 생성자를 통해 의존성 주입
+    // 여기서는 CardatabaseApplication의 필드로 repository 선언
+    private final CarRepository repository;
+    private final OwnerRepository oRepository;
+    private final AppUserRepository uRepository;
+    // 생성자 주입을 통한 CarRepository / OwnerRepository
+    public CardatabaseApplication(CarRepository repository, OwnerRepository oRepository, AppUserRepository uRepository) {
         this.repository = repository;
-        this.onwerRepository = onwerRepository;
+        this.oRepository = oRepository;
+        this.uRepository = uRepository;
     }
 
     public static void main(String[] args) {
-
         SpringApplication.run(CardatabaseApplication.class, args);
-
         logger.info("애플리케이션 실행");
     }
 
     @Override
     public void run(String... args) throws Exception {
-        // Owner 객체 생성
+        // Owner 객체를 생성하고 DB에 저장할겁니다.
         Owner owner1 = new Owner("John", "Johnson");
         Owner owner2 = new Owner("Mary", "Robinson");
         Owner owner3 = new Owner("근수", "안");
-        onwerRepository.saveAll(Arrays.asList(owner1, owner2, owner3));
-
+        oRepository.saveAll(Arrays.asList(owner1, owner2, owner3));
 
         repository.save(new Car("Ford", "Mustang", "Red", "ADF-11121", 2023, 59000, owner1));
         repository.save(new Car("Nissan", "Leaf", "White", "SSJ-3002", 2020, 29000, owner1));
-        repository.save(new Car("Toyata", "Pruis", "Silver", "KKO-0212", 2022, 39000, owner2));
+        repository.save(new Car("Toyota", "Prius", "Silver", "KKO-0212", 2022, 39000, owner2));
         repository.save(new Car("Kia", "Seltos", "Chacoal", "360수5690", 2020, 28000, owner3));
 
-        // 모든 자동차 엔티티를 다 찾아서 Console 창에 로깅
+        // 모든 자동차 엔티티를 다 찾아내서 Console창에 로깅
         for (Car car : repository.findAll()) {
             logger.info("브랜드: {}, 모델명: {}", car.getBrand(), car.getModel());
         }
+
+        //사용자명 : user, 비밀번호: user
+        uRepository.save(new AppUser("user", "$2y$04$8LzQFW2vKpk2ZgY53O/i1OLaZLX2XU16dcXw7GIX6NkKDWtoLVkxm","USER"));
+        //사용자명 : admin, 비밀번호: admin
+        uRepository.save(new AppUser("admin","$2y$04$2SMufY/BVcG4Vz3yHjIbHu1My/d6IrY1btCApAvLzG/MgNW.bkIES","ADMIN"));
+        uRepository.save(new AppUser("kijunsung", "$2y$04$e6HPLwu/K1ZX0jQjL7HwbOWeyg1z7lY2Ot3sxhwnpsY2yOSCPRCV2", "USER"));
+
+
+
     }
 }

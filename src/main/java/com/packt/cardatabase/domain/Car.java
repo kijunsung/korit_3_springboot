@@ -13,15 +13,11 @@ public class Car {
     private int modelYear, price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="owner")       // 조인할 때 쓸 컬럼인데 컬럼명을 owner로 지은 것
+    @JoinColumn(name="owner")
     private Owner owner;
-    // @JoinColumn만 사용할 경우 하이버네이트에서 pk_fk 형태로 임의의 컬럼명을 생성항 -> ownerId_owner 등
 
-    // 기본 생성자.
-    public Car() {
-    }
+    public Car() {}
 
-    // id 필드를 제외한 나머지 필드에 대한 RequiredargsConstructor.
     public Car(String brand, String model, String color, String registrationNumber, int modelYear, int price, Owner owner) {
         this.brand = brand;
         this.model = model;
@@ -32,7 +28,6 @@ public class Car {
         this.owner = owner;
     }
 
-    // Getter / Setter
     public Long getId() {
         return id;
     }
